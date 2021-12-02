@@ -2,7 +2,9 @@ package com.example.secondapp
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -17,35 +19,40 @@ class MyService : Service() {
     private val channelID = 1
     private val notificationChannelDescription = "notification_description"
     var id = 0
-//  val requestCode = 1
+    val requestCode = 1
 
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        createNotificationChannel()
-        var productName = intent.getStringExtra("productName")
 
-        Toast.makeText(
+        val launchIntent = Intent()
+        launchIntent.component = ComponentName(
+            "com.example.shoppingapp",
+            "com.example.shoppingapp.EditProductActivity"
+        )
+
+        launchIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//      launchIntent?.putExtra("productID", intent.getStringExtra("productID"))
+        launchIntent?.putExtra("productName", intent.getStringExtra("productName"))
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
             this,
-            "Receiver odebrał: "+ intent.getStringExtra("str1"),
-            Toast.LENGTH_SHORT
-        ).show()
+            requestCode,
+            launchIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
-        // permissions:
-//        val pendingIntent = PendingIntent.getActivity(
-//            this,
-//            requestCode,
-//            intent,
-//        PendingIntent.FLAG_UPDATE_CURRENT
-//        )
+        startActivity(launchIntent)
 
+        // generating notification
+        createNotificationChannel()
         val notification = NotificationCompat.Builder(this, channelID.toString())
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Added product: "+productName)
+            .setContentTitle("Added product: "+intent.getStringExtra("productName"))
             .setContentText("Click to edit...")
-//          .setContentIntent(pendingIntent)
+            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
         val notificationManager = NotificationManagerCompat.from(this)

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.secondapp">
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,7 +13,8 @@
         <service
             android:name=".MyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+        </service>
 
         <receiver
             android:name=".MyReceiver"
@@ -20,7 +22,7 @@
             android:exported="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name=" com.example.secondapp.MainActivity"></action>
+                <action android:name=" com.example.secondapp.MyReceiver"></action>
             </intent-filter>
         </receiver>
 
@@ -29,10 +31,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity> android:name="com.example.jar.myPackage.myService" </activity>
+
+
     </application>
 
 </manifest>
